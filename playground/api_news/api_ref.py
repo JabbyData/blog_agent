@@ -25,10 +25,10 @@ def main(config_path: str) -> None:
     sources = newsapi.get_sources(country="fr")["sources"]
     restricted_sources = ",".join([source["id"] for source in sources])
 
-    q = "tech"
-    from_param = "2025-11-15"
-    to = "2025-12-15"
-    language = "en"
+    q = "Abattage troupeau france"
+    from_param = "2025-12-01"
+    to = "2025-12-16"
+    language = "fr"
     sort_by = "relevancy"
 
     # /v2/everything
