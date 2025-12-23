@@ -11,3 +11,7 @@ wheels/
 
 # configs
 configs.json
+
+# weights
+agents/query_analyzer/
+

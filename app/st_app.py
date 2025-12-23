@@ -1,6 +1,7 @@
 # /// script
 # requires-python = ">=3.11"
 # dependencies = [
+#     "happytransformer",
 #     "langchain-huggingface",
 #     "streamlit",
 #     "torch",
@@ -8,17 +9,24 @@
 # ]
 # ///
 import streamlit as st
+import torch
 from langchain_huggingface import HuggingFacePipeline
-from transformers import pipeline
+from tools import load_models
+from transformers import AutoModelForSeq2SeqLM, AutoTokenizer, pipeline
 
 
-@st.cache_resource  # reuse pipe between refreshes
-def load_summarizer():
-    pipe = pipeline("summarization", model="Falconsai/text_summarization", device=0)
-    return HuggingFacePipeline(pipeline=pipe)
+@st.cache_resource
+def load_corrector(query_model_path):
+    tokenizer = AutoTokenizer.from_pretrained(query_model_path)
+    model = AutoModelForSeq2SeqLM.from_pretrained(query_model_path)
+    pipe = pipeline(
+        task="text2text-generation", model=model, tokenizer=tokenizer, device="cuda"
+    )
+
+    return pipe
 
 
-def summarize_query(query_llm: HuggingFacePipeline):
+def summarize_query(corrector: pipeline):
     user_query = st.text_area("Quel contenu souhaitez-vous explorer ?")
 
     if st.button("Analyse"):
@@ -27,19 +35,20 @@ def summarize_query(query_llm: HuggingFacePipeline):
         else:
             with st.spinner("Analyse de votre demande en cours ..."):
                 try:
-                    response = query_llm.invoke(user_query)
-                    st.subheader("Voici une vue synthétique de votre recherche :")
+                    response = corrector(f"grammar: {user_query}")
+                    st.subheader("Voici une version corrigée de votre phrase :")
                     st.success(response)
                 except Exception as e:
                     st.error(f"Une erreur est survenue : {e}")
 
 
-def main() -> None:
+def main(paths: dict) -> None:
     st.title("Welcome to AlgoBlog :rocket:", text_alignment="center")
     st.header(body="Your blog feeding partner :writing_hand: ", text_alignment="center")
-    query_llm = load_summarizer()
-    summarize_query(query_llm=query_llm)
+    corrector = load_corrector(paths["query_corrector_dir"])
+    summarize_query(corrector=corrector)
 
 
 if __name__ == "__main__":
-    main()
+    paths = load_models()
+    main(paths)
