@@ -8,25 +8,30 @@
 #     "transformers",
 # ]
 # ///
+import json
+import os
+import sys
+
+# adding root dir to python path
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import streamlit as st
-import torch
-from langchain_huggingface import HuggingFacePipeline
-from tools import load_models
-from transformers import AutoModelForSeq2SeqLM, AutoTokenizer, pipeline
+
+from agents.query_analyzer.query_analyzer import QueryAnalyzer
 
 
 @st.cache_resource
-def load_corrector(query_model_path):
-    tokenizer = AutoTokenizer.from_pretrained(query_model_path)
-    model = AutoModelForSeq2SeqLM.from_pretrained(query_model_path)
-    pipe = pipeline(
-        task="text2text-generation", model=model, tokenizer=tokenizer, device="cuda"
+def load_analyzer(configs_path):
+    with open(configs_path, "r") as f:
+        configs = json.load(f)
+    analyzer = QueryAnalyzer(
+        tokenizer_path=configs["query_analyzer"]["tokenizer_path"],
+        model_path=configs["query_analyzer"]["model_path"],
     )
+    return analyzer
 
-    return pipe
 
-
-def summarize_query(corrector: pipeline):
+def treat_user_query(analyzer):
     user_query = st.text_area("Quel contenu souhaitez-vous explorer ?")
 
     if st.button("Analyse"):
@@ -35,20 +40,24 @@ def summarize_query(corrector: pipeline):
         else:
             with st.spinner("Analyse de votre demande en cours ..."):
                 try:
-                    response = corrector(f"grammar: {user_query}")
-                    st.subheader("Voici une version corrigée de votre phrase :")
+                    response = (
+                        analyzer.process_user_query(user_query)
+                        .split("OUTPUT:")[1]
+                        .split(".")[0]
+                    )
+                    st.subheader("Version synthétique de votre recherche :")
                     st.success(response)
                 except Exception as e:
                     st.error(f"Une erreur est survenue : {e}")
 
 
-def main(paths: dict) -> None:
+def main() -> None:
     st.title("Welcome to AlgoBlog :rocket:", text_alignment="center")
     st.header(body="Your blog feeding partner :writing_hand: ", text_alignment="center")
-    corrector = load_corrector(paths["query_corrector_dir"])
-    summarize_query(corrector=corrector)
+    configs_path = os.path.join(os.getcwd(), "configs.json")
+    analyzer = load_analyzer(configs_path)
+    treat_user_query(analyzer=analyzer)
 
 
 if __name__ == "__main__":
-    paths = load_models()
-    main(paths)
+    main()

@@ -13,14 +13,14 @@ from huggingface_hub import snapshot_download
 
 
 def load_models():
-    paths = {}
     dir_path = os.getcwd()
-    config_path = os.path.join(dir_path, "configs.json")
-    with open(config_path, "r") as config_file:
-        configs = json.load(config_file)
+    configs_path = os.path.join(dir_path, "configs.json")
+    print(os.path.join(dir_path, "agents", "query_analyzer", "tokenizer.model.v3"))
+
+    with open(configs_path, "r") as f:
+        configs = json.load(f)
 
     try:
-        hf_configs = configs["huggingface"]
         agents_dir = os.path.join(dir_path, "agents")
 
         ## Query Analyzer
@@ -37,6 +37,14 @@ def load_models():
                 ],
                 local_dir=query_analyzer_dir,
             )
+            configs["query_analyzer"] = {
+                "tokenizer_path": os.path.join(
+                    query_analyzer_dir, "tokenizer.model.v3"
+                ),
+                "model_path": os.path.join(query_analyzer_dir),
+            }
+            with open(configs_path, "w") as f:
+                json.dump(configs, f)
 
     except Exception as e:
         if os.path.exists(query_analyzer_dir):
@@ -44,7 +52,6 @@ def load_models():
         print(f"An error occured {e}")
 
     print("Models loaded !")
-    return paths
 
 
 if __name__ == "__main__":
