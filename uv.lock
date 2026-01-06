@@ -73,6 +73,7 @@ dependencies = [
     { name = "langchain" },
     { name = "langchain-huggingface" },
     { name = "mistral-inference" },
+    { name = "newsapi" },
     { name = "newsapi-python" },
     { name = "requests" },
     { name = "sentencepiece" },
@@ -87,6 +88,7 @@ requires-dist = [
     { name = "langchain", specifier = ">=1.2.0" },
     { name = "langchain-huggingface", specifier = ">=1.2.0" },
     { name = "mistral-inference", specifier = ">=1.6.0" },
+    { name = "newsapi", specifier = ">=0.1.1" },
     { name = "newsapi-python", specifier = ">=0.2.7" },
     { name = "requests", specifier = ">=2.32.5" },
     { name = "sentencepiece", specifier = ">=0.2.1" },
@@ -681,6 +683,18 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/6a/51/63fe664f3908c97be9d2e4f1158eb633317598cfa6e1fc14af5383f17512/networkx-3.6.1.tar.gz", hash = "sha256:26b7c357accc0c8cde558ad486283728b65b6a95d85ee1cd66bafab4c8168509", size = 2517025, upload-time = "2025-12-08T17:02:39.908Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/9e/c9/b2622292ea83fbb4ec318f5b9ab867d0a28ab43c5717bb85b0a5f6b3b0a4/networkx-3.6.1-py3-none-any.whl", hash = "sha256:d47fbf302e7d9cbbb9e2555a0d267983d2aa476bac30e90dfbe5669bd57f3762", size = 2068504, upload-time = "2025-12-08T17:02:38.159Z" },
+]
+
+[[package]]
+name = "newsapi"
+version = "0.1.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "requests" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/07/23/5f829dbb4e74fa9e8674f9ecaad520ca81b067e05a14ab4403751f42d1c0/newsapi-0.1.1.tar.gz", hash = "sha256:ba6eae31d66f8a804134779c4f4a984fea90ef77be20dba40c2808c75042a69a", size = 7194, upload-time = "2017-03-28T22:10:14.679Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/56/70/df0dd31067f03703d06f66b6c3f324915bd43bc8a597ee1a7eef27c9e622/newsapi-0.1.1-py2.py3-none-any.whl", hash = "sha256:baef702f6e29fc2736932858528d94f18b2baaef9d330018ba78369e005e1df4", size = 4127, upload-time = "2017-03-28T22:10:12.306Z" },
 ]
 
 [[package]]

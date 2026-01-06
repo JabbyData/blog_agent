@@ -25,16 +25,18 @@ def main(analyzer_dir) -> None:
             UserMessage(
                 content=(
                     "TASK: Rewrite the following user query to correct all grammatical and spelling errors, "
-                    "then provide a one-sentence summary of the core intent.\n\n"
+                    "then provide keywords summarizing the query.\n\n"
                     "FORMAT:\n"
-                    "REVISED: [Corrected text]\n"
-                    "SUMMARY: [Concise summary]\n\n"
+                    "OUTPUT: [Corrected and concise summary]\n\n"
                     "CONSTRAINTS:\n"
                     "- No conversational filler.\n"
                     "- The summary must be under 20 words.\n"
-                    "- Maintain the original tone.\n\n"
+                    "- DO NOT USE VERBS.\n"
+                    "- Output should start with OUTPUT.\n"
+                    "- Output should end with a point.\n"
+                    "- Make it simple and neutral.\n\n"
                     "QUERY: "
-                    "I want ot right about news in the worlde. Find me information about tech startups in Urope over the last months. I want articles in French."
+                    + "Find me information about tech stratupus in Urope about Quantum comuputing."
                 )
             ),
         ]

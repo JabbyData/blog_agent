@@ -9,7 +9,7 @@
 import json
 import os
 
-from newsapi import NewsApiClient, const
+from newsapi.newsapi_client import NewsApiClient, const
 
 
 def main(config_path: str) -> None:
@@ -17,7 +17,7 @@ def main(config_path: str) -> None:
     with open(config_path) as f:
         configs = json.load(f)
 
-    newsapi = NewsApiClient(api_key=configs["newsapi_api_key"])
+    newsapi = NewsApiClient(api_key=configs["newsapi"]["api_key"])
 
     # sources
     # print(const.countries)
@@ -25,16 +25,16 @@ def main(config_path: str) -> None:
     sources = newsapi.get_sources(country="fr")["sources"]
     restricted_sources = ",".join([source["id"] for source in sources])
 
-    q = "Abattage troupeau france"
-    from_param = "2025-12-01"
-    to = "2025-12-16"
-    language = "fr"
+    q = "Information on European quantum computing startups."
+    from_param = "2025-12-20"
+    to = "2026-01-06"
+    language = "en"
     sort_by = "relevancy"
 
     # /v2/everything
     all_articles = newsapi.get_everything(
         q=q,
-        sources=restricted_sources,
+        # sources=restricted_sources,
         from_param=from_param,
         to=to,
         language=language,
