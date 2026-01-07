@@ -25,7 +25,7 @@ def main(config_path: str) -> None:
     sources = newsapi.get_sources(country="fr")["sources"]
     restricted_sources = ",".join([source["id"] for source in sources])
 
-    q = "Information on European quantum computing startups."
+    q = "Tech startups in Europe - Information requested"
     from_param = "2025-12-20"
     to = "2026-01-06"
     language = "en"
@@ -41,7 +41,7 @@ def main(config_path: str) -> None:
         sort_by=sort_by,
     )
 
-    print(all_articles["articles"][0])
+    print(all_articles["articles"])
 
 
 if __name__ == "__main__":

@@ -63,7 +63,7 @@ def extract_search_criteria():
     if query:
         st.divider()
         st.subheader("2. Paramètres de recherche :dart:")
-        st.info(f"Requête analysée : **{query}**")
+        st.info(f"Requête analysée : {query}")
 
         with st.form("criteria_form"):
             st.write("Affinez votre recherche. Laissez vide si pas de préférence.")
@@ -97,8 +97,6 @@ def get_all_articles():
     search_criteria = st.session_state.get("search_criteria")
 
     if search_criteria:
-        st.divider()
-        st.subheader("3. Collecte des références :basket:")
         with st.spinner("Chargement en cours ..."):
             config_path = os.path.join(os.getcwd(), "configs.json")
             try:
@@ -118,15 +116,60 @@ def get_all_articles():
                 sort_by="relevancy",
             )
 
-            st.session_state["all_articles"] = all_articles
+            st.session_state["all_articles"] = all_articles["articles"]
 
 
 def display_articles():
-    # Extract title, source, url and quick description from each article and display
     all_articles = st.session_state.get("all_articles")
 
     if all_articles:
-        print(all_articles)
+        st.divider()
+        st.subheader("3. Collecte des références :basket:")
+        BATCH_SIZE = 10  # nb max elt per page
+        if "display_limit" not in st.session_state:
+            st.session_state["display_limit"] = BATCH_SIZE
+
+        articles_container = st.container()
+
+        with articles_container:
+            for i in range(
+                st.session_state["display_limit"] - BATCH_SIZE,
+                st.session_state["display_limit"],
+            ):
+                if i < len(all_articles):
+                    article = all_articles[i]
+
+                with st.container(border=True):
+                    col1, col2 = st.columns([3, 1])
+                    with col1:
+                        st.markdown(f"##### {article['title']}")
+                        desc = article["description"]
+                        if len(desc) > 200:
+                            desc = desc[:200] + "..."
+                        st.write(desc)
+                    with col2:
+                        st.write("")
+                        st.link_button(
+                            "Ouvrir :link:", article["url"], use_container_width=True
+                        )
+        col3, col4 = st.columns(2)
+        with col3:
+            if st.button(
+                ":arrow_left: Afficher les articles précédents ",
+                use_container_width=True,
+            ):
+                st.session_state["display_limit"] = max(
+                    0, st.session_state["display_limit"] - BATCH_SIZE
+                )
+                st.rerun()
+        with col4:
+            if st.button(
+                "Afficher les articles suivants :arrow_right:", use_container_width=True
+            ):
+                st.session_state["display_limit"] = min(
+                    len(all_articles), st.session_state["display_limit"] + BATCH_SIZE
+                )
+                st.rerun()
 
 
 def main() -> None:

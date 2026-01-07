@@ -35,8 +35,7 @@ def main(analyzer_dir) -> None:
                     "- Output should start with OUTPUT.\n"
                     "- Output should end with a point.\n"
                     "- Make it simple and neutral.\n\n"
-                    "QUERY: "
-                    + "Find me information about tech stratupus in Urope about Quantum comuputing."
+                    "QUERY: " + "Find articles about tech stratups in Europe."
                 )
             ),
         ]
