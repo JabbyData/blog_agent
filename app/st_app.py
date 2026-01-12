@@ -187,6 +187,8 @@ def main() -> None:
     get_all_articles()
     display_articles()
 
+    # Draft enhancement
+
 
 if __name__ == "__main__":
     main()
