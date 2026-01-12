@@ -159,7 +159,7 @@ def display_articles():
                 use_container_width=True,
             ):
                 st.session_state["display_limit"] = max(
-                    0, st.session_state["display_limit"] - BATCH_SIZE
+                    BATCH_SIZE, st.session_state["display_limit"] - BATCH_SIZE
                 )
                 st.rerun()
         with col4:
