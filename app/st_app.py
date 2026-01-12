@@ -41,7 +41,7 @@ def treat_user_query():
         st.subheader("1. Analyse de votre requête :speech_balloon:")
         user_query = st.text_area("Quel contenu souhaitez-vous explorer ?")
 
-        if st.button("Analyse"):
+        if st.button("Analyser"):
             if user_query.strip() == "":
                 st.warning("Merci de rentrer du contenu dans le champs de recherche.")
             else:
@@ -172,6 +172,37 @@ def display_articles():
                 st.rerun()
 
 
+def treat_user_draft():
+    if (
+        "display_limit" in st.session_state
+    ):  # activation only once first articles appeared
+        st.divider()
+        st.subheader("4. Analyse de votre article :thought_balloon:")
+        user_draft = st.text_area("Merci de rentrer votre contenu ici.")
+
+        if st.button("Valider"):
+            if user_draft.strip() == "":
+                st.warning("Merci de rentrer des du contenu avant de l'analyser.")
+            else:
+                analyzer = st.session_state["analyzer"]
+                with st.spinner("Analyse de votre demande en cours ..."):
+                    try:
+                        response = (
+                            analyzer.process_user_draft(user_draft)
+                            .split("OUTPUT:")[1]
+                            .split(".")[0]
+                        )
+                        st.session_state["processed_draft"] = response
+                        print(response)
+                    except Exception as e:
+                        st.error(f"Une erreur est survenue : {e}")
+
+        if "processed_draft" in st.session_state:
+            st.info(
+                f"Article synthétisé : \n {st.session_state.get('processed_draft')}"
+            )
+
+
 def main() -> None:
     # Intro
     st.title("Welcome to AlgoBlog :rocket:", text_alignment="center")
@@ -186,6 +217,9 @@ def main() -> None:
     extract_search_criteria()
     get_all_articles()
     display_articles()
+
+    # Draft enhancement
+    treat_user_draft()
 
 
 if __name__ == "__main__":
