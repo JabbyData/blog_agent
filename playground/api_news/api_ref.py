@@ -41,7 +41,7 @@ def main(config_path: str) -> None:
         sort_by=sort_by,
     )
 
-    print(all_articles["articles"][0])
+    print(all_articles["articles"][0]["publishedAt"].split("T")[0])
 
 
 if __name__ == "__main__":

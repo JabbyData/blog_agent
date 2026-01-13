@@ -148,10 +148,11 @@ def display_articles():
                             desc = desc[:200] + "..."
                         st.write(desc)
                     with col2:
-                        st.write("")
                         st.link_button(
                             "Ouvrir :link:", article["url"], use_container_width=True
                         )
+                        st.write(article["source"]["name"], unsafe_allow_html=True)
+                        st.write(article["publishedAt"].split("T")[0])
         col3, col4 = st.columns(2)
         with col3:
             if st.button(
@@ -187,19 +188,17 @@ def treat_user_draft():
                 analyzer = st.session_state["analyzer"]
                 with st.spinner("Analyse de votre demande en cours ..."):
                     try:
-                        response = (
-                            analyzer.process_user_draft(user_draft)
-                            .split("OUTPUT:")[1]
-                            .split(".")[0]
-                        )
+                        response = analyzer.process_user_draft(user_draft).split(
+                            "OUTPUT:"
+                        )[1]
                         st.session_state["processed_draft"] = response
                         print(response)
                     except Exception as e:
                         st.error(f"Une erreur est survenue : {e}")
 
         if "processed_draft" in st.session_state:
-            st.info(
-                f"Article synthétisé : \n {st.session_state.get('processed_draft')}"
+            st.write(
+                f"## Article synthétisé :newspaper: \n {st.session_state.get('processed_draft')}"
             )
 
 
